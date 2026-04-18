@@ -15,9 +15,9 @@ app.use('/exercises', ExerciseRouter())
 const httpServer = http.createServer(app)
 
 try {
-    sequelize.sync()
+  void sequelize.sync()
 } catch (error) {
-    console.log('Sequelize sync error')
+  console.log('Sequelize sync error', error)
 }
 
 httpServer.listen(8000).on('listening', () => console.log(`Server started at port ${8000}`))
