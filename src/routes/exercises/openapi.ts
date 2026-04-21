@@ -33,6 +33,20 @@ const completedExerciseSchema = z
 const messageResponse = z.object({ message: z.string() })
 const exerciseIdParams = z.object({ exerciseId: z.string() })
 
+const completedExerciseWithExerciseSchema = completedExerciseSchema
+  .extend({
+    exercise: z
+      .object({
+        id: z.number(),
+        name: z.string(),
+        difficulty: z.string(),
+        programID: z.number().int(),
+      })
+      .nullable()
+      .optional(),
+  })
+  .openapi('CompletedExerciseWithExercise')
+
 registry.registerPath({
   method: 'get',
   path: '/exercises',
@@ -45,6 +59,49 @@ registry.registerPath({
           schema: z.object({ data: z.array(exerciseWithProgramSchema), message: z.string() }),
         },
       },
+    },
+  },
+})
+
+registry.registerPath({
+  method: 'get',
+  path: '/exercises/completed',
+  tags: ['Exercises'],
+  security: [{ [bearerAuth.name]: [] }],
+  responses: {
+    200: {
+      description: 'List of completed exercises',
+      content: {
+        'application/json': {
+          schema: z.object({
+            data: z.array(completedExerciseWithExerciseSchema),
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: messageResponse } },
+    },
+  },
+})
+
+registry.registerPath({
+  method: 'delete',
+  path: '/exercises/{exerciseId}/completed/{id}',
+  tags: ['Exercises'],
+  security: [{ [bearerAuth.name]: [] }],
+  request: { params: exerciseIdParams.extend({ id: z.string() }) },
+  responses: {
+    204: { description: 'Completed exercise removed' },
+    401: {
+      description: 'Unauthorized',
+      content: { 'application/json': { schema: messageResponse } },
+    },
+    404: {
+      description: 'Completed exercise not found',
+      content: { 'application/json': { schema: messageResponse } },
     },
   },
 })

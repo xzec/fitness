@@ -22,6 +22,40 @@ export default () => {
     })
   })
 
+  router.get('/completed', requireAuth, async (req: Request, res: Response): Promise<any> => {
+    const completed = await CompletedExercise.findAll({
+      where: { userID: req.user.id },
+      include: [{ model: Exercise }],
+      order: [['startedAt', 'DESC']],
+    })
+
+    return res.json({
+      data: completed,
+      message: 'List of completed exercises',
+    })
+  })
+
+  router.delete(
+    '/:exerciseId/completed/:id',
+    requireAuth,
+    async (req: Request<{ exerciseId: string; id: string }>, res: Response): Promise<any> => {
+      const completed = await CompletedExercise.findOne({
+        where: {
+          id: req.params.id,
+          userID: req.user.id,
+          exerciseID: req.params.exerciseId,
+        },
+      })
+      if (!completed) {
+        return res.status(404).json({ message: 'Completed exercise not found' })
+      }
+
+      await completed.destroy()
+
+      return res.status(204).send()
+    }
+  )
+
   router.post(
     '/:exerciseId/start',
     requireAuth,
