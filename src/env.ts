@@ -4,6 +4,8 @@ import { z } from 'zod'
 const envSchema = z.object({
   PORT: z.coerce.number().default(8000).describe('API port'),
   DATABASE_URL: z.url().describe('Postgres database url'),
+  JWT_SECRET: z.string().min(1).describe('JWT secret key for Passport'),
+  JWT_EXPIRES_IN: z.string().default('1d').describe('JWT expiration time'),
 })
 
 const parsed = envSchema.safeParse(process.env)

@@ -8,6 +8,7 @@ export interface UserModel extends Model {
   surname: string
   nickName: string
   email: string
+  password: string
   age: number
   role: USER_ROLE
 }
@@ -34,6 +35,10 @@ export default (sequelize: Sequelize, modelName: string) => {
       email: {
         type: DataTypes.STRING(200),
         unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       age: {
         type: DataTypes.INTEGER,
