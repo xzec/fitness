@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { Sequelize } from 'sequelize'
 
+import defineCompletedExercise from '~/db/completed-exercise'
 import defineExercise from '~/db/exercise'
 import defineProgram from '~/db/program'
 import defineUser from '~/db/user'
@@ -12,11 +13,13 @@ const sequelize: Sequelize = new Sequelize(env.DATABASE_URL, {
 
 sequelize.authenticate().catch((e: any) => console.error(`Unable to connect to the database${e}.`))
 
+const CompletedExercise = defineCompletedExercise(sequelize, 'completedExercise')
 const Exercise = defineExercise(sequelize, 'exercise')
 const Program = defineProgram(sequelize, 'program')
 const User = defineUser(sequelize, 'user')
 
 const models = {
+  CompletedExercise,
   Exercise,
   Program,
   User,
