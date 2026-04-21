@@ -8,6 +8,7 @@ import ProgramRouter from '~/routes/programs'
 import ExerciseRouter from '~/routes/exercises'
 import AuthRouter from '~/routes/auth'
 import AdminUserRouter from '~/routes/admin/users'
+import AdminExerciseRouter from '~/routes/admin/exercises'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(express.json())
 app.use(passport.initialize())
 app.use('/auth', AuthRouter())
 app.use('/admin/users', AdminUserRouter())
+app.use('/admin/exercises', AdminExerciseRouter())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 

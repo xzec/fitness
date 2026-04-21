@@ -48,7 +48,7 @@ Content-Type: application/json
 GET {{baseUrl}}/exercises
 
 ### POST /exercises — ADMIN happy path → 201, saves {{createdExerciseID}}
-POST {{baseUrl}}/exercises
+POST {{baseUrl}}/admin/exercises
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -63,7 +63,7 @@ Content-Type: application/json
 %}
 
 ### POST /exercises — no token → 401
-POST {{baseUrl}}/exercises
+POST {{baseUrl}}/admin/exercises
 Content-Type: application/json
 
 {
@@ -73,7 +73,7 @@ Content-Type: application/json
 }
 
 ### POST /exercises — USER role → 403
-POST {{baseUrl}}/exercises
+POST {{baseUrl}}/admin/exercises
 Authorization: Bearer {{userToken}}
 Content-Type: application/json
 
@@ -84,7 +84,7 @@ Content-Type: application/json
 }
 
 ### POST /exercises — bad body (missing difficulty) → 400
-POST {{baseUrl}}/exercises
+POST {{baseUrl}}/admin/exercises
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -94,7 +94,7 @@ Content-Type: application/json
 }
 
 ### POST /exercises — unknown program → 404
-POST {{baseUrl}}/exercises
+POST {{baseUrl}}/admin/exercises
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -105,7 +105,7 @@ Content-Type: application/json
 }
 
 ### PATCH /exercises/:id — ADMIN → 200
-PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+PATCH {{baseUrl}}/admin/exercises/{{createdExerciseID}}
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -115,7 +115,7 @@ Content-Type: application/json
 }
 
 ### PATCH /exercises/:id — USER → 403
-PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+PATCH {{baseUrl}}/admin/exercises/{{createdExerciseID}}
 Authorization: Bearer {{userToken}}
 Content-Type: application/json
 
@@ -124,7 +124,7 @@ Content-Type: application/json
 }
 
 ### PATCH /exercises/:id — unknown exercise → 404
-PATCH {{baseUrl}}/exercises/9999
+PATCH {{baseUrl}}/admin/exercises/9999
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -133,7 +133,7 @@ Content-Type: application/json
 }
 
 ### PATCH /exercises/:id — unknown programID → 404
-PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+PATCH {{baseUrl}}/admin/exercises/{{createdExerciseID}}
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -142,11 +142,11 @@ Content-Type: application/json
 }
 
 ### DELETE /exercises/:id — ADMIN → 204, already deleted → 404
-DELETE {{baseUrl}}/exercises/{{createdExerciseID}}
+DELETE {{baseUrl}}/admin/exercises/{{createdExerciseID}}
 Authorization: Bearer {{adminToken}}
 
 ### DELETE /exercises/:id — USER → 403
-DELETE {{baseUrl}}/exercises/1
+DELETE {{baseUrl}}/admin/exercises/1
 Authorization: Bearer {{userToken}}
 
 ### GET /admin/users — ADMIN → 200, saves {{targetUserID}} (last user in list)
