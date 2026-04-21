@@ -1,7 +1,8 @@
 import { models, sequelize } from '~/db'
-import { EXERCISE_DIFFICULTY } from '~/utils/enums'
+import { EXERCISE_DIFFICULTY, USER_ROLE } from '~/utils/enums'
+import bcrypt from 'bcrypt'
 
-const { Exercise, Program } = models
+const { Exercise, Program, User } = models
 
 const seedDB = async () => {
   await sequelize.sync({ force: true })
@@ -48,6 +49,30 @@ const seedDB = async () => {
       name: 'Exercise 6',
       difficulty: EXERCISE_DIFFICULTY.HARD,
       programID: 2,
+    },
+  ])
+
+  const pass = await bcrypt.hash('password', 10)
+  await User.bulkCreate([
+    {
+      email: 'john@a.co',
+      password: pass,
+      role: USER_ROLE.ADMIN,
+    },
+    {
+      email: 'karl@a.co',
+      password: pass,
+      role: USER_ROLE.USER,
+    },
+    {
+      email: 'luke@a.co',
+      password: pass,
+      role: USER_ROLE.USER,
+    },
+    {
+      email: 'mary@a.co',
+      password: pass,
+      role: USER_ROLE.USER,
     },
   ])
 }
