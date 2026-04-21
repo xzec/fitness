@@ -9,3 +9,10 @@ export const registerSchema = z.object({
 })
 
 export type RegisterBody = z.infer<typeof registerSchema>
+
+export const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(1),
+})
+
+export type LoginBody = z.infer<typeof loginSchema>

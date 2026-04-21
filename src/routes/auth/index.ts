@@ -1,9 +1,11 @@
 import type { Request, Response } from 'express'
 import { Router } from 'express'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 import { models } from '~/db'
-import { type RegisterBody, registerSchema } from '~/routes/auth/schema'
+import env from '~/env'
+import { type LoginBody, type RegisterBody, loginSchema, registerSchema } from '~/routes/auth/schema'
 import { validateBody } from '~/utils/validate'
 
 const router = Router()
@@ -28,6 +30,33 @@ export default () => {
       return res.status(201).json({
         data: { id: user.id, email: user.email, role: user.role },
         message: 'User registered',
+      })
+    }
+  )
+
+  router.post(
+    '/login',
+    validateBody(loginSchema),
+    async (req: Request<any, any, LoginBody>, res: Response): Promise<any> => {
+      const { email, password } = req.body
+
+      const user = await User.findOne({ where: { email } })
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid credentials' })
+      }
+
+      const ok = await bcrypt.compare(password, user.password)
+      if (!ok) {
+        return res.status(401).json({ message: 'Invalid credentials' })
+      }
+
+      const token = jwt.sign({ id: user.id }, env.JWT_SECRET, {
+        expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
+      })
+
+      return res.json({
+        data: { token },
+        message: 'Logged in',
       })
     }
   )
