@@ -1,4 +1,3 @@
-import http from 'http'
 import express from 'express'
 
 import { sequelize } from './db'
@@ -20,6 +19,4 @@ try {
   console.log('Sequelize sync error', error)
 }
 
-httpServer.listen(8000).on('listening', () => console.log(`Server started at port ${8000}`))
-
-export default httpServer
+app.listen(env.PORT).on('listening', () => console.log(`Server started at port ${env.PORT}`))

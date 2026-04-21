@@ -16,11 +16,13 @@
   "license": "ISC",
   "dependencies": {
     "cross-env": "^7.0.2",
+    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "pg": "^8.16.0",
     "sequelize": "^6.37.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

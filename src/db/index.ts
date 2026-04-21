@@ -4,8 +4,9 @@ import { Sequelize } from 'sequelize'
 import defineExercise from './exercise'
 import defineProgram from './program'
 import defineUser from './user'
+import env from '~/env'
 
-const sequelize: Sequelize = new Sequelize('postgresql://postgres:postgres@localhost:5432/fitness_app', {
+const sequelize: Sequelize = new Sequelize(env.DATABASE_URL, {
   logging: false,
 })
 
