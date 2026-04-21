@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register -r tsconfig-paths/register src/index.ts",
     "seed": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register -r tsconfig-paths/register src/seed.ts",
-    "lint": "eslint --fix",
+    "lint": "eslint",
     "type-check": "tsc --noEmit"
   },
   "license": "ISC",

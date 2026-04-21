@@ -2,10 +2,10 @@ import express from 'express'
 import passport from 'passport'
 
 import env from '~/env'
-import { sequelize } from './db'
-import configurePassport from './passport'
-import ProgramRouter from './routes/programs'
-import ExerciseRouter from './routes/exercises'
+import { sequelize } from '~/db'
+import configurePassport from '~/passport'
+import ProgramRouter from '~/routes/programs'
+import ExerciseRouter from '~/routes/exercises'
 import AuthRouter from '~/routes/auth/register'
 
 const app = express()

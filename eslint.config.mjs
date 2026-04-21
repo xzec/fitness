@@ -22,6 +22,7 @@ export default defineConfig(
                 ...globals.jest,
             },
             sourceType: 'commonjs',
+            parser: tseslint.parser,
             parserOptions: {
                 projectService: true,
                 tsconfigRootDir: import.meta.dirname,
@@ -42,6 +43,7 @@ export default defineConfig(
             '@typescript-eslint/no-unsafe-argument': 'warn',
             '@typescript-eslint/no-unused-vars': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',
+            '@typescript-eslint/consistent-type-imports': "error",
             'unused-imports/no-unused-imports': 'error',
             'unused-imports/no-unused-vars': [
                 'warn',

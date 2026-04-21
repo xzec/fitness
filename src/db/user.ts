@@ -1,6 +1,7 @@
-import { Sequelize, DataTypes, Model } from 'sequelize'
+import type { Sequelize, Model } from 'sequelize'
+import { DataTypes } from 'sequelize'
 
-import { USER_ROLE } from '../utils/enums'
+import { USER_ROLE } from '~/utils/enums'
 
 export interface UserModel extends Model {
   id: number
