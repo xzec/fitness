@@ -8,8 +8,9 @@ export interface CompletedExerciseModel extends Model {
   id: number
   userID: number
   exerciseID: number
-  completedAt: Date
-  durationSeconds: number
+  startedAt: Date
+  completedAt: Date | null
+  durationSeconds: number | null
 
   user?: UserModel
   exercise?: ExerciseModel
@@ -25,13 +26,17 @@ export default (sequelize: Sequelize, modelName: string) => {
         allowNull: false,
         autoIncrement: true,
       },
-      completedAt: {
+      startedAt: {
         type: DataTypes.DATE,
         allowNull: false,
       },
+      completedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       durationSeconds: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         validate: { min: 0 },
       },
     },

@@ -2,10 +2,13 @@ import type { Request, Response } from 'express'
 import { Router } from 'express'
 
 import { models } from '~/db'
+import { type FinishExerciseBody, finishExerciseSchema } from '~/routes/exercises/schema'
+import { requireAuth } from '~/utils/auth'
+import { validateBody } from '~/utils/validate'
 
 const router = Router()
 
-const { Exercise, Program } = models
+const { CompletedExercise, Exercise, Program } = models
 
 export default () => {
   router.get('/', async (_req: Request, res: Response): Promise<any> => {
@@ -18,6 +21,60 @@ export default () => {
       message: 'List of exercises',
     })
   })
+
+  router.post(
+    '/:exerciseId/start',
+    requireAuth,
+    async (req: Request<{ exerciseId: string }>, res: Response): Promise<any> => {
+      const exercise = await Exercise.findByPk(req.params.exerciseId)
+      if (!exercise) {
+        return res.status(404).json({ message: 'Exercise not found' })
+      }
+
+      const completed = await CompletedExercise.create({
+        userID: req.user.id,
+        exerciseID: exercise.id,
+        startedAt: new Date(),
+      })
+
+      return res.status(201).json({
+        data: completed,
+        message: 'Exercise started',
+      })
+    }
+  )
+
+  router.post(
+    '/:exerciseId/finish',
+    requireAuth,
+    validateBody(finishExerciseSchema),
+    async (req: Request<{ exerciseId: string }, any, FinishExerciseBody>, res: Response): Promise<any> => {
+      const completed = await CompletedExercise.findOne({
+        where: {
+          id: req.body.id,
+          userID: req.user.id,
+          exerciseID: req.params.exerciseId,
+        },
+      })
+      if (!completed) {
+        return res.status(404).json({ message: "Can't complete exercise that never started" })
+      }
+      if (completed.completedAt) {
+        return res.status(409).json({ message: 'Exercise already finished' })
+      }
+
+      const now = new Date()
+      await completed.update({
+        completedAt: now,
+        durationSeconds: Math.floor((now.getTime() - completed.startedAt.getTime()) / 1000),
+      })
+
+      return res.json({
+        data: completed,
+        message: 'Exercise finished',
+      })
+    }
+  )
 
   return router
 }
