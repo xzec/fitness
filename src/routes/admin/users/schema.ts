@@ -11,4 +11,5 @@ export const updateUserSchema = z
     role: z.enum(USER_ROLE),
   })
   .partial()
+  .openapi('UpdateUserBody')
 export type UpdateUserBody = z.infer<typeof updateUserSchema>

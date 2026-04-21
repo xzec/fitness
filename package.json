@@ -16,6 +16,8 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.5.0",
+    "@scalar/express-api-reference": "^0.9.9",
     "bcrypt": "^6.0.0",
     "cross-env": "^7.0.2",
     "dotenv": "^17.4.2",
