@@ -1,9 +1,9 @@
 import fs from 'fs'
 import { Sequelize } from 'sequelize'
 
-import defineExercise from './exercise'
-import defineProgram from './program'
-import defineUser from './user'
+import defineExercise from '~/db/exercise'
+import defineProgram from '~/db/program'
+import defineUser from '~/db/user'
 import env from '~/env'
 
 const sequelize: Sequelize = new Sequelize(env.DATABASE_URL, {

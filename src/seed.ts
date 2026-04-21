@@ -1,5 +1,5 @@
-import { models, sequelize } from './db'
-import { EXERCISE_DIFFICULTY } from './utils/enums'
+import { models, sequelize } from '~/db'
+import { EXERCISE_DIFFICULTY } from '~/utils/enums'
 
 const { Exercise, Program } = models
 
