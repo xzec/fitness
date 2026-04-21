@@ -8,8 +8,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register src/index.ts",
-    "seed": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register src/seed.ts",
+    "start": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "seed": "cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true node -r ts-node/register -r tsconfig-paths/register src/seed.ts",
     "lint": "eslint --fix",
     "type-check": "echo \"Error: no check specified\" && exit 1"
   },
@@ -33,6 +33,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "globals": "^17.5.0",
     "prettier": "^3.8.3",
+    "tsconfig-paths": "^4.2.0",
     "typescript-eslint": "^8.58.2"
   }
 }
