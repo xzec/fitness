@@ -6,6 +6,7 @@ import env from '~/env'
 import { sequelize } from '~/db'
 import configurePassport from '~/passport'
 import { generateOpenApiSpec } from '~/openapi/registry'
+import { errorHandler } from '~/utils/error-handler'
 import ProgramRouter from '~/routes/programs'
 import ExerciseRouter from '~/routes/exercises'
 import UsersRouter from '~/routes/users'
@@ -41,6 +42,8 @@ app.get('/openapi.json', (_req, res) => {
   res.json(generateOpenApiSpec())
 })
 app.use('/docs', apiReference({ url: '/openapi.json' }))
+
+app.use(errorHandler)
 
 try {
   void sequelize.sync()
