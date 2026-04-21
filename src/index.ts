@@ -9,6 +9,7 @@ import { generateOpenApiSpec } from '~/openapi/registry'
 import ProgramRouter from '~/routes/programs'
 import ExerciseRouter from '~/routes/exercises'
 import UsersRouter from '~/routes/users'
+import ProfileRouter from '~/routes/profile'
 import AuthRouter from '~/routes/auth'
 import AdminUserRouter from '~/routes/admin/users'
 import AdminExerciseRouter from '~/routes/admin/exercises'
@@ -19,6 +20,7 @@ import '~/routes/admin/exercises/openapi'
 import '~/routes/programs/openapi'
 import '~/routes/exercises/openapi'
 import '~/routes/users/openapi'
+import '~/routes/profile/openapi'
 
 const app = express()
 
@@ -33,6 +35,7 @@ app.use('/admin/exercises', AdminExerciseRouter())
 app.use('/programs', ProgramRouter())
 app.use('/exercises', ExerciseRouter())
 app.use('/users', UsersRouter())
+app.use('/profile', ProfileRouter())
 
 app.get('/openapi.json', (_req, res) => {
   res.json(generateOpenApiSpec())
