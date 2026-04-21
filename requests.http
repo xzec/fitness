@@ -1,0 +1,150 @@
+### Register ADMIN (one-time; 409 after)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
+  "role": "ADMIN"
+}
+
+### Register USER (one-time; 409 after)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}",
+  "role": "USER"
+}
+
+### Login ADMIN → saves {{adminToken}}
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+> {%
+  client.global.set("adminToken", response.body.data.token);
+%}
+
+### Login USER → saves {{userToken}}
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
+}
+
+> {%
+  client.global.set("userToken", response.body.data.token);
+%}
+
+### GET /exercises — public
+GET {{baseUrl}}/exercises
+
+### POST /exercises — ADMIN happy path → 201, saves {{createdExerciseID}}
+POST {{baseUrl}}/exercises
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Push-up",
+  "difficulty": "EASY",
+  "programID": {{programID}}
+}
+
+> {%
+  client.global.set("createdExerciseID", response.body.data.id);
+%}
+
+### POST /exercises — no token → 401
+POST {{baseUrl}}/exercises
+Content-Type: application/json
+
+{
+  "name": "Push-up",
+  "difficulty": "EASY",
+  "programID": {{programID}}
+}
+
+### POST /exercises — USER role → 403
+POST {{baseUrl}}/exercises
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "name": "Push-up",
+  "difficulty": "EASY",
+  "programID": {{programID}}
+}
+
+### POST /exercises — bad body (missing difficulty) → 400
+POST {{baseUrl}}/exercises
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "X",
+  "programID": {{programID}}
+}
+
+### POST /exercises — unknown program → 404
+POST {{baseUrl}}/exercises
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "X",
+  "difficulty": "EASY",
+  "programID": 9999
+}
+
+### PATCH /exercises/:id — ADMIN → 200
+PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Push-up (updated)",
+  "difficulty": "MEDIUM"
+}
+
+### PATCH /exercises/:id — USER → 403
+PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "name": "nope"
+}
+
+### PATCH /exercises/:id — unknown exercise → 404
+PATCH {{baseUrl}}/exercises/9999
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "x"
+}
+
+### PATCH /exercises/:id — unknown programID → 404
+PATCH {{baseUrl}}/exercises/{{createdExerciseID}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "programID": 9999
+}
+
+### DELETE /exercises/:id — ADMIN → 204, already deleted → 404
+DELETE {{baseUrl}}/exercises/{{createdExerciseID}}
+Authorization: Bearer {{adminToken}}
+
+### DELETE /exercises/:id — USER → 403
+DELETE {{baseUrl}}/exercises/1
+Authorization: Bearer {{userToken}}
