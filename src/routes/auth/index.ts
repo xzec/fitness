@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import { models } from '~/db'
 import env from '~/env'
 import { type LoginBody, type RegisterBody, loginSchema, registerSchema } from '~/routes/auth/schema'
+import { ConflictError, UnauthorizedError } from '~/utils/http-error'
 import { validateBody } from '~/utils/validate'
 
 const router = Router()
@@ -21,7 +22,7 @@ export default () => {
 
       const existing = await User.findOne({ where: { email } })
       if (existing) {
-        return res.status(409).json({ message: 'E-mail already registered' })
+        throw new ConflictError('E-mail already registered')
       }
 
       const hash = await bcrypt.hash(password, 10)
@@ -42,12 +43,12 @@ export default () => {
 
       const user = await User.findOne({ where: { email } })
       if (!user) {
-        return res.status(401).json({ message: 'Invalid credentials' })
+        throw new UnauthorizedError('Invalid credentials')
       }
 
       const ok = await bcrypt.compare(password, user.password)
       if (!ok) {
-        return res.status(401).json({ message: 'Invalid credentials' })
+        throw new UnauthorizedError('Invalid credentials')
       }
 
       const token = jwt.sign({ id: user.id }, env.JWT_SECRET, {

@@ -4,6 +4,7 @@ import { Router } from 'express'
 import { models } from '~/db'
 import { type FinishExerciseBody, finishExerciseSchema } from '~/routes/exercises/schema'
 import { requireAuth } from '~/utils/auth'
+import { ConflictError, NotFoundError } from '~/utils/http-error'
 import { validateBody } from '~/utils/validate'
 
 const router = Router()
@@ -47,7 +48,7 @@ export default () => {
         },
       })
       if (!completed) {
-        return res.status(404).json({ message: 'Completed exercise not found' })
+        throw new NotFoundError('Completed exercise not found')
       }
 
       await completed.destroy()
@@ -62,7 +63,7 @@ export default () => {
     async (req: Request<{ exerciseId: string }>, res: Response): Promise<any> => {
       const exercise = await Exercise.findByPk(req.params.exerciseId)
       if (!exercise) {
-        return res.status(404).json({ message: 'Exercise not found' })
+        throw new NotFoundError('Exercise not found')
       }
 
       const completed = await CompletedExercise.create({
@@ -91,10 +92,10 @@ export default () => {
         },
       })
       if (!completed) {
-        return res.status(404).json({ message: "Can't complete exercise that never started" })
+        throw new NotFoundError("Can't complete exercise that never started")
       }
       if (completed.completedAt) {
-        return res.status(409).json({ message: 'Exercise already finished' })
+        throw new ConflictError('Exercise already finished')
       }
 
       const now = new Date()

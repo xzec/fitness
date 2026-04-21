@@ -1,16 +1,15 @@
 import type { Request, Response, NextFunction } from 'express'
 import type { ZodType } from 'zod'
 
+import { BadRequestError } from '~/utils/http-error'
+
 export const validateBody =
   <T>(schema: ZodType<T>) =>
-  (req: Request, res: Response, next: NextFunction): any => {
+  (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body)
     if (!result.success) {
-      return res.status(400).json({
-        message: 'Validation error',
-        issues: result.error.issues,
-      })
+      throw new BadRequestError('Validation error', result.error.issues)
     }
     req.body = result.data
-    return next()
+    next()
   }

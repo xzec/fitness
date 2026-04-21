@@ -10,6 +10,7 @@ import {
 } from '~/routes/admin/exercises/schema'
 import { requireAuth, requireRole } from '~/utils/auth'
 import { USER_ROLE } from '~/utils/enums'
+import { NotFoundError } from '~/utils/http-error'
 import { validateBody } from '~/utils/validate'
 
 const router = Router()
@@ -27,7 +28,7 @@ export default () => {
 
       const program = await Program.findByPk(programID)
       if (!program) {
-        return res.status(404).json({ message: 'Program not found' })
+        throw new NotFoundError('Program not found')
       }
 
       const exercise = await Exercise.create({ name, difficulty, programID })
@@ -45,13 +46,13 @@ export default () => {
     async (req: Request<{ id: string }, any, UpdateExerciseBody>, res: Response): Promise<any> => {
       const exercise = await Exercise.findByPk(req.params.id)
       if (!exercise) {
-        return res.status(404).json({ message: 'Exercise not found' })
+        throw new NotFoundError('Exercise not found')
       }
 
       if (req.body.programID !== undefined) {
         const program = await Program.findByPk(req.body.programID)
         if (!program) {
-          return res.status(404).json({ message: 'Program not found' })
+          throw new NotFoundError('Program not found')
         }
       }
 
@@ -67,7 +68,7 @@ export default () => {
   router.delete('/:id', async (req: Request<{ id: string }>, res: Response): Promise<any> => {
     const exercise = await Exercise.findByPk(req.params.id)
     if (!exercise) {
-      return res.status(404).json({ message: 'Exercise not found' })
+      throw new NotFoundError('Exercise not found')
     }
 
     await exercise.destroy()

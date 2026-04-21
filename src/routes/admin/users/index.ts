@@ -5,6 +5,7 @@ import { models } from '~/db'
 import { type UpdateUserBody, updateUserSchema } from '~/routes/admin/users/schema'
 import { requireAuth, requireRole } from '~/utils/auth'
 import { USER_ROLE } from '~/utils/enums'
+import { NotFoundError } from '~/utils/http-error'
 import { validateBody } from '~/utils/validate'
 
 const router = Router()
@@ -28,7 +29,7 @@ export default () => {
       attributes: { exclude: ['password'] },
     })
     if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+      throw new NotFoundError('User not found')
     }
 
     return res.json({
@@ -43,7 +44,7 @@ export default () => {
     async (req: Request<{ id: string }, any, UpdateUserBody>, res: Response): Promise<any> => {
       const user = await User.findByPk(req.params.id)
       if (!user) {
-        return res.status(404).json({ message: 'User not found' })
+        throw new NotFoundError('User not found')
       }
 
       await user.update(req.body)
