@@ -7,6 +7,7 @@ import { sequelize } from '~/db'
 import configurePassport from '~/passport'
 import { generateOpenApiSpec } from '~/openapi/registry'
 import { errorHandler } from '~/utils/error-handler'
+import { requestLogger } from '~/utils/request-logger'
 import ProgramRouter from '~/routes/programs'
 import ExerciseRouter from '~/routes/exercises'
 import UsersRouter from '~/routes/users'
@@ -30,6 +31,7 @@ configurePassport()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(passport.initialize())
+app.use(requestLogger)
 app.use('/auth', AuthRouter())
 app.use('/admin/users', AdminUserRouter())
 app.use('/admin/exercises', AdminExerciseRouter())
