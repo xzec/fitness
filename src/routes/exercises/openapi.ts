@@ -1,8 +1,9 @@
 import { z } from 'zod'
 
 import { bearerAuth, registry } from '~/openapi/registry'
-import { finishExerciseSchema } from '~/routes/exercises/schema'
+import { finishExerciseSchema, listExercisesQuerySchema } from '~/routes/exercises/schema'
 import { EXERCISE_DIFFICULTY } from '~/utils/enums'
+import { paginated } from '~/utils/query-schemas'
 
 const exerciseWithProgramSchema = z
   .object({
@@ -51,14 +52,19 @@ registry.registerPath({
   method: 'get',
   path: '/exercises',
   tags: ['Exercises'],
+  request: { query: listExercisesQuerySchema },
   responses: {
     200: {
       description: 'List of exercises',
       content: {
         'application/json': {
-          schema: z.object({ data: z.array(exerciseWithProgramSchema), message: z.string() }),
+          schema: paginated.extend({ exercises: z.array(exerciseWithProgramSchema) }),
         },
       },
+    },
+    400: {
+      description: 'Invalid query',
+      content: { 'application/json': { schema: messageResponse } },
     },
   },
 })

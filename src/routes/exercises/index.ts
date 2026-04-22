@@ -2,22 +2,34 @@ import type { Request, Response } from 'express'
 import { Router } from 'express'
 
 import { models } from '~/db'
-import { type FinishExerciseBody, finishExerciseSchema } from '~/routes/exercises/schema'
+import {
+  type FinishExerciseBody,
+  type ListExercisesQuery,
+  finishExerciseSchema,
+  listExercisesQuerySchema,
+} from '~/routes/exercises/schema'
 import { requireAuth } from '~/utils/auth'
 import { ConflictError, NotFoundError } from '~/utils/http-error'
-import { validateBody } from '~/utils/validate'
+import { validateBody, validateQuery } from '~/utils/validate'
 
 const router = Router()
 
 const { CompletedExercise, Exercise, Program } = models
 
 export default () => {
-  router.get('/', async (_req: Request, res: Response): Promise<any> => {
-    const exercises = await Exercise.findAll({
+  router.get('/', validateQuery(listExercisesQuerySchema), async (req: Request, res: Response): Promise<any> => {
+    const { page, limit } = req.query as unknown as ListExercisesQuery
+    const { rows, count } = await Exercise.findAndCountAll({
       include: [{ model: Program }],
+      limit,
+      offset: (page - 1) * limit,
+      order: [['id', 'ASC']],
     })
 
-    return res.json(exercises)
+    return res.json({
+      exercises: rows,
+      pagination: { page, limit, total: count },
+    })
   })
 
   router.get('/completed', requireAuth, async (req: Request, res: Response): Promise<any> => {
