@@ -9,5 +9,9 @@ export const finishExerciseSchema = z
   .openapi('FinishExerciseBody')
 export type FinishExerciseBody = z.infer<typeof finishExerciseSchema>
 
-export const listExercisesQuerySchema = paginationQuerySchema.openapi('ListExercisesQuery')
+export const listExercisesQuerySchema = paginationQuerySchema
+  .extend({
+    programId: z.coerce.number().int().positive().optional(),
+  })
+  .openapi('ListExercisesQuery')
 export type ListExercisesQuery = z.infer<typeof listExercisesQuerySchema>
