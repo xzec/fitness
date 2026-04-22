@@ -6,12 +6,14 @@ import { models } from '~/db'
 import {
   type FinishExerciseBody,
   type ListExercisesQuery,
+  exerciseIdParamSchema,
   finishExerciseSchema,
   listExercisesQuerySchema,
 } from '~/routes/exercises/schema'
+import { idParamSchema } from '~/utils/common-schemas'
 import { requireAuth } from '~/utils/auth'
 import { ConflictError, NotFoundError } from '~/utils/http-error'
-import { validateBody, validateQuery } from '~/utils/validate'
+import { validateBody, validateParams, validateQuery } from '~/utils/validate'
 
 const router = Router()
 
@@ -54,6 +56,7 @@ export default () => {
   router.delete(
     '/:exerciseId/completed/:id',
     requireAuth,
+    validateParams(exerciseIdParamSchema.extend(idParamSchema.shape)),
     async (req: Request<{ exerciseId: string; id: string }>, res: Response): Promise<any> => {
       const completed = await CompletedExercise.findOne({
         where: {
@@ -75,6 +78,7 @@ export default () => {
   router.post(
     '/:exerciseId/start',
     requireAuth,
+    validateParams(exerciseIdParamSchema),
     async (req: Request<{ exerciseId: string }>, res: Response): Promise<any> => {
       const exercise = await Exercise.findByPk(req.params.exerciseId)
       if (!exercise) {
@@ -94,6 +98,7 @@ export default () => {
   router.post(
     '/:exerciseId/finish',
     requireAuth,
+    validateParams(exerciseIdParamSchema),
     validateBody(finishExerciseSchema),
     async (req: Request<{ exerciseId: string }, any, FinishExerciseBody>, res: Response): Promise<any> => {
       const completed = await CompletedExercise.findOne({

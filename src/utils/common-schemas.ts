@@ -13,6 +13,10 @@ export const searchQuerySchema = z.object({
   search: z.string().trim().min(1).optional(),
 })
 
+export const idParamSchema = z.object({
+  id: z.coerce.number().int().positive(),
+})
+
 export const paginated = z.object({
   pagination: z.object({
     page: z.number().int(),

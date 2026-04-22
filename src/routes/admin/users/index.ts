@@ -6,7 +6,8 @@ import { type UpdateUserBody, updateUserSchema } from '~/routes/admin/users/sche
 import { requireAuth, requireRole } from '~/utils/auth'
 import { USER_ROLE } from '~/utils/enums'
 import { NotFoundError } from '~/utils/http-error'
-import { validateBody } from '~/utils/validate'
+import { idParamSchema } from '~/utils/common-schemas'
+import { validateBody, validateParams } from '~/utils/validate'
 
 const router = Router()
 
@@ -21,19 +22,24 @@ export default () => {
     return res.json(users)
   })
 
-  router.get('/:id', async (req: Request<{ id: string }>, res: Response): Promise<any> => {
-    const user = await User.findByPk(req.params.id, {
-      attributes: { exclude: ['password'] },
-    })
-    if (!user) {
-      throw new NotFoundError('User not found')
-    }
+  router.get(
+    '/:id',
+    validateParams(idParamSchema),
+    async (req: Request<{ id: string }>, res: Response): Promise<any> => {
+      const user = await User.findByPk(req.params.id, {
+        attributes: { exclude: ['password'] },
+      })
+      if (!user) {
+        throw new NotFoundError('User not found')
+      }
 
-    return res.json(user)
-  })
+      return res.json(user)
+    }
+  )
 
   router.patch(
     '/:id',
+    validateParams(idParamSchema),
     validateBody(updateUserSchema),
     async (req: Request<{ id: string }, any, UpdateUserBody>, res: Response): Promise<any> => {
       const user = await User.findByPk(req.params.id)

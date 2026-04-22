@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 import { bearerAuth, registry } from '~/openapi/registry'
-import { finishExerciseSchema, listExercisesQuerySchema } from '~/routes/exercises/schema'
+import { exerciseIdParamSchema, finishExerciseSchema, listExercisesQuerySchema } from '~/routes/exercises/schema'
 import { EXERCISE_DIFFICULTY } from '~/utils/enums'
-import { paginated } from '~/utils/query-schemas'
+import { idParamSchema, paginated } from '~/utils/common-schemas'
 
 const exerciseWithProgramSchema = z
   .object({
@@ -32,7 +32,6 @@ const completedExerciseSchema = z
   .openapi('CompletedExercise')
 
 const messageResponse = z.object({ message: z.string() })
-const exerciseIdParams = z.object({ exerciseId: z.string() })
 
 const completedExerciseWithExerciseSchema = completedExerciseSchema
   .extend({
@@ -98,7 +97,7 @@ registry.registerPath({
   path: '/exercises/{exerciseId}/completed/{id}',
   tags: ['Exercises'],
   security: [{ [bearerAuth.name]: [] }],
-  request: { params: exerciseIdParams.extend({ id: z.string() }) },
+  request: { params: exerciseIdParamSchema.extend(idParamSchema.shape) },
   responses: {
     204: { description: 'Completed exercise removed' },
     401: {
@@ -117,7 +116,7 @@ registry.registerPath({
   path: '/exercises/{exerciseId}/start',
   tags: ['Exercises'],
   security: [{ [bearerAuth.name]: [] }],
-  request: { params: exerciseIdParams },
+  request: { params: exerciseIdParamSchema },
   responses: {
     201: {
       description: 'Exercise started',
@@ -144,7 +143,7 @@ registry.registerPath({
   tags: ['Exercises'],
   security: [{ [bearerAuth.name]: [] }],
   request: {
-    params: exerciseIdParams,
+    params: exerciseIdParamSchema,
     body: { content: { 'application/json': { schema: finishExerciseSchema } } },
   },
   responses: {

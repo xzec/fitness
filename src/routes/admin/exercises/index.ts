@@ -11,7 +11,8 @@ import {
 import { requireAuth, requireRole } from '~/utils/auth'
 import { USER_ROLE } from '~/utils/enums'
 import { NotFoundError } from '~/utils/http-error'
-import { validateBody } from '~/utils/validate'
+import { idParamSchema } from '~/utils/common-schemas'
+import { validateBody, validateParams } from '~/utils/validate'
 
 const router = Router()
 
@@ -39,6 +40,7 @@ export default () => {
 
   router.patch(
     '/:id',
+    validateParams(idParamSchema),
     validateBody(updateExerciseSchema),
     async (req: Request<{ id: string }, any, UpdateExerciseBody>, res: Response): Promise<any> => {
       const exercise = await Exercise.findByPk(req.params.id)
@@ -59,16 +61,20 @@ export default () => {
     }
   )
 
-  router.delete('/:id', async (req: Request<{ id: string }>, res: Response): Promise<any> => {
-    const exercise = await Exercise.findByPk(req.params.id)
-    if (!exercise) {
-      throw new NotFoundError('Exercise not found')
+  router.delete(
+    '/:id',
+    validateParams(idParamSchema),
+    async (req: Request<{ id: string }>, res: Response): Promise<any> => {
+      const exercise = await Exercise.findByPk(req.params.id)
+      if (!exercise) {
+        throw new NotFoundError('Exercise not found')
+      }
+
+      await exercise.destroy()
+
+      return res.status(204).send()
     }
-
-    await exercise.destroy()
-
-    return res.status(204).send()
-  })
+  )
 
   return router
 }
