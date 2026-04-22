@@ -6,14 +6,11 @@ export const requestLogger: RequestHandler = (req, res, next) => {
   const start = process.hrtime.bigint()
 
   res.on('finish', () => {
-    const durationMs = Number(process.hrtime.bigint() - start) / 1e6
-    logger.info('request', {
-      method: req.method,
-      url: req.originalUrl,
-      status: res.statusCode,
-      durationMs,
-      userID: req.user?.id,
-    })
+    const durationMs = Math.round(Number(process.hrtime.bigint() - start) / 1e3) / 1e3
+    logger.log(
+      res.statusCode >= 500 ? 'error' : 'info',
+      `${res.statusCode} ${req.method} ${req.originalUrl} ${durationMs}ms ${req.user?.id ? `user=${req.user.id}` : ''}`
+    )
   })
 
   next()

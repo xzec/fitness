@@ -28,10 +28,7 @@ export default () => {
       const hash = await bcrypt.hash(password, 10)
       const user = await User.create({ email, password: hash, role })
 
-      return res.status(201).json({
-        data: { id: user.id, email: user.email, role: user.role },
-        message: 'User registered',
-      })
+      return res.status(201).json({ id: user.id, email: user.email, role: user.role })
     }
   )
 
@@ -55,10 +52,7 @@ export default () => {
         expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
       })
 
-      return res.json({
-        data: { token },
-        message: 'Logged in',
-      })
+      return res.json({ token })
     }
   )
 

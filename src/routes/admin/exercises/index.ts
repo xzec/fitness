@@ -33,10 +33,7 @@ export default () => {
 
       const exercise = await Exercise.create({ name, difficulty, programID })
 
-      return res.status(201).json({
-        data: exercise,
-        message: 'Exercise created',
-      })
+      return res.status(201).json(exercise)
     }
   )
 
@@ -58,10 +55,7 @@ export default () => {
 
       await exercise.update(req.body)
 
-      return res.json({
-        data: exercise,
-        message: 'Exercise updated',
-      })
+      return res.json(exercise)
     }
   )
 

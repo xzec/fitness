@@ -14,10 +14,7 @@ export default () => {
   router.get('/', async (_req: Request, res: Response): Promise<any> => {
     const users = await User.findAll({ attributes: ['id', 'nickName'] })
 
-    return res.json({
-      data: users,
-      message: 'List of users',
-    })
+    return res.json(users)
   })
 
   return router

@@ -18,10 +18,7 @@ export default () => {
   router.get('/', async (_req: Request, res: Response): Promise<any> => {
     const users = await User.findAll({ attributes: { exclude: ['password'] } })
 
-    return res.json({
-      data: users,
-      message: 'List of users',
-    })
+    return res.json(users)
   })
 
   router.get('/:id', async (req: Request<{ id: string }>, res: Response): Promise<any> => {
@@ -32,10 +29,7 @@ export default () => {
       throw new NotFoundError('User not found')
     }
 
-    return res.json({
-      data: user,
-      message: 'User detail',
-    })
+    return res.json(user)
   })
 
   router.patch(
@@ -53,10 +47,7 @@ export default () => {
         attributes: { exclude: ['password'] },
       })
 
-      return res.json({
-        data: updated,
-        message: 'User updated',
-      })
+      return res.json(updated)
     }
   )
 

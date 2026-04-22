@@ -17,10 +17,7 @@ export default () => {
       include: [{ model: Program }],
     })
 
-    return res.json({
-      data: exercises,
-      message: 'List of exercises',
-    })
+    return res.json(exercises)
   })
 
   router.get('/completed', requireAuth, async (req: Request, res: Response): Promise<any> => {
@@ -30,10 +27,7 @@ export default () => {
       order: [['startedAt', 'DESC']],
     })
 
-    return res.json({
-      data: completed,
-      message: 'List of completed exercises',
-    })
+    return res.json(completed)
   })
 
   router.delete(
@@ -72,10 +66,7 @@ export default () => {
         startedAt: new Date(),
       })
 
-      return res.status(201).json({
-        data: completed,
-        message: 'Exercise started',
-      })
+      return res.status(201).json(completed)
     }
   )
 
@@ -104,10 +95,7 @@ export default () => {
         durationSeconds: Math.floor((now.getTime() - completed.startedAt.getTime()) / 1000),
       })
 
-      return res.json({
-        data: completed,
-        message: 'Exercise finished',
-      })
+      return res.json(completed)
     }
   )
 

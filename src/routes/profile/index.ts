@@ -11,10 +11,7 @@ export default () => {
   router.get('/', (req: Request, res: Response): any => {
     const { id, name, surname, age, nickName } = req.user
 
-    return res.json({
-      data: { id, name, surname, age, nickName },
-      message: 'Profile detail',
-    })
+    return res.json({ id, name, surname, age, nickName })
   })
 
   return router
