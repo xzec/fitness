@@ -9,6 +9,10 @@ export const paginationQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(MAX_LIMIT).default(DEFAULT_LIMIT),
 })
 
+export const searchQuerySchema = z.object({
+  search: z.string().trim().min(1).optional(),
+})
+
 export const paginated = z.object({
   pagination: z.object({
     page: z.number().int(),

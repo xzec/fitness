@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 import { Router } from 'express'
-import type { WhereOptions } from 'sequelize'
+import { Op, type WhereOptions } from 'sequelize'
 
 import { models } from '~/db'
 import {
@@ -19,10 +19,13 @@ const { CompletedExercise, Exercise, Program } = models
 
 export default () => {
   router.get('/', validateQuery(listExercisesQuerySchema), async (req: Request, res: Response): Promise<any> => {
-    const { page, limit, programId } = req.query as unknown as ListExercisesQuery
+    const { page, limit, programId, search } = req.query as unknown as ListExercisesQuery
     const where: WhereOptions = {}
     if (programId !== undefined) {
       where.programID = programId
+    }
+    if (search) {
+      where.name = { [Op.iLike]: `%${search}%` }
     }
     const { rows, count } = await Exercise.findAndCountAll({
       where,

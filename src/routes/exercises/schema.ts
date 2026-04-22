@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { paginationQuerySchema } from '~/utils/query-schemas'
+import { paginationQuerySchema, searchQuerySchema } from '~/utils/query-schemas'
 
 export const finishExerciseSchema = z
   .object({
@@ -10,6 +10,7 @@ export const finishExerciseSchema = z
 export type FinishExerciseBody = z.infer<typeof finishExerciseSchema>
 
 export const listExercisesQuerySchema = paginationQuerySchema
+  .extend(searchQuerySchema.shape)
   .extend({
     programId: z.coerce.number().int().positive().optional(),
   })
